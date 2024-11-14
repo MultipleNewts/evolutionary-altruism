@@ -1,0 +1,7 @@
+# results folder
+
+Simulations/Results/
+
+# result images
+
+*.png
