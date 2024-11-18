@@ -45,7 +45,7 @@ pop_N = 100
 # Number of times a given member plays a given opponent
 num_rounds = 10
 # The number of the bottom x members that are replaced with the top x members
-num_replace = 5
+num_replace = 1
 # Max number of times the population is evolved
 max_gen = 15
 # <><><><><><><><><><><><><>
@@ -61,6 +61,17 @@ def for_two():
     pop = Population(pop_N, num_rounds, num_replace, mistake_chance, reward_matrix)
     pop.set_play(play.play_all_2)
     return pop
+
+
+def find_threshold(pop, p):
+    C_plus = pop.reward_matrix[3][0]
+    C_minus = pop.reward_matrix[1][0]
+    E_plus = pop.reward_matrix[1][1]
+    E_minus = pop.reward_matrix[0][0]
+    N = pop.N
+    numerator = N*(p*(E_plus-E_minus+C_minus)-C_minus)-E_minus
+    denominator = N*(p*C_plus-E_minus)-C_plus
+    return numerator/denominator
 
 
 def test_time():
@@ -89,15 +100,17 @@ def test_time():
 
 def main():
     # pop = for_three()
+    r = 0.7
     pop = for_two()
-    pop.add_type("Always Coop", strat.AlwaysCoop, 0.2)
-    pop.add_type("Always Cheat", strat.AlwaysCheat, 0.2)
-    pop.add_type("Random", strat.Random, 0.2)
-    pop.add_type("Copy Cat", strat.CopyCat, 0.2)
-    pop.add_type("Grudger", strat.Grudger, 0.2)
+    # pop.add_type("Always Coop", strat.AlwaysCoop, 0.1)
+    pop.add_type("Always Cheat", strat.AlwaysCheat, 0.3)
+    # pop.add_type("Random", strat.Random, 0.2)
+    pop.add_type("Copy Cat", strat.CopyCat, r/2)
+    pop.add_type("Grudger", strat.Grudger, r/2)
     # pop.add_type("Copy Kitten", strat.CopyKitten, 0.2)
     # pop.add_type("Variant Cat", strat.CopyCatVariant, 0.2)
     # pop.add_type("Variant Kitten", strat.CopyKittenVariant, 0.2)
+
     pop.assemble()
     print("===Control Vars===")
     print(f"The Total Population is: {pop_N}")
@@ -105,6 +118,9 @@ def main():
     print(f"The Number of Rounds between players is: {num_rounds}")
     print(f"Each Evolution Replaces the bottom: {num_replace} members")
     print(f"The Mistake Chance is: {mistake_chance*100}%")
+    print("===Descriptive Stats===")
+    print(f"The threshold r value for this setup is: {find_threshold(pop, 2)}")
+
     pop.run_tournament(max_gen)
     print("===Execution Time===")
     print(f"Execution Time: {time.time()-start_time} seconds")
