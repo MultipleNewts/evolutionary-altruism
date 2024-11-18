@@ -25,7 +25,7 @@ class Population:
                 self.population.append(type[1](id, type[0]))
                 n += 1
                 id += 1
-        if ratio != 1:
+        if np.round(ratio, 10) != 1:
             raise AttributeError("Ratios do not sum to 1")
 
     def add_type(self, label, strategy, ratio=1):
@@ -73,23 +73,23 @@ class Population:
         # print(num_top, num_bottom)
         top = scored_population[:self.num_replace]
         bottom = scored_population[-self.num_replace:]
-        if num_top > 5:
+        if num_top > self.num_replace:
             top = []
             top_selection = scored_population[:num_top-1]
-            for i in range(5):
+            for i in range(self.num_replace):
                 choice = random.choice(top_selection)
                 top.append(choice)
                 top_selection.remove(choice)
 
-        if num_bottom > 5:
+        if num_bottom > self.num_replace:
             bottom = []
             bottom_selection = scored_population[-num_bottom-1:]
-            for i in range(5):
+            for i in range(self.num_replace):
                 choice = random.choice(bottom_selection)
                 bottom.append(choice)
                 bottom_selection.remove(choice)
 
-        for i in range(5):
+        for i in range(self.num_replace):
             self.population.remove(bottom[i])
             self.population.append(top[i])
 
