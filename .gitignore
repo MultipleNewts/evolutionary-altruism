@@ -8,4 +8,4 @@ Simulations/Results/
 
 # cache
 
-Simulations/__pycache__/
+*.pyc
