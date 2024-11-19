@@ -5,3 +5,7 @@ Simulations/Results/
 # result images
 
 *.png
+
+# cache
+
+Simulations/__pycache__/
